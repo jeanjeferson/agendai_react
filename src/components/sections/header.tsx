@@ -1,40 +1,39 @@
-"use client"
-import React, { useState } from 'react'
-import Link from 'next/link'
-import { Menu, X } from 'lucide-react'
-import { cn } from '@/lib/utils'
-
-const navigationItems = [
-  { name: 'Funcionalidades', href: '#features' },
-  { name: 'Planos', href: '#pricing' },
-  { name: 'Contato', href: '#contact' },
-  { name: 'Perguntas frequentes', href: '#faq' },
-]
+"use client";
+import { Button } from "@/components/ui/button";
+import {
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import { Menu, LogIn, ArrowRight } from "lucide-react"; // Ícones adicionados
+import Link from "next/link";
+import { useEffect, useState } from "react";
 
 export const Header = () => {
-  const [isOpen, setIsOpen] = useState(false)
+  const [isOpen, setIsOpen] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
 
-  const toggleMenu = () => {
-    setIsOpen(!isOpen)
-    // Previne scroll quando menu está aberto
-    document.body.style.overflow = !isOpen ? 'hidden' : 'unset'
-  }
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
-  // Fecha o menu ao clicar em um link
   const handleLinkClick = () => {
-    setIsOpen(false)
-    document.body.style.overflow = 'unset'
+    setIsOpen(false);
+  };
+
+  if (!isMounted) {
+    return null;
   }
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-40 bg-black/50 backdrop-blur-lg border-b border-white/10">
-      <nav className="relative w-full px-4 md:px-6 py-4 flex justify-between items-center">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-black/80 backdrop-blur-lg border-b border-white/10 h-16 shadow-lg shadow-black/30 transition-all duration-300">
+      <div className="container mx-auto px-4 flex items-center justify-between h-full">
         {/* Logo */}
-        <Link 
-          href="/" 
-          className="hover:opacity-90 transition-opacity flex items-center"
+        <Link
+          href="/"
+          className="hover:opacity-90 transition-opacity flex items-center space-x-2"
         >
-          <h1 className="text-balance relative text-xl md:text-2xl font-sans font-semibold tracking-tight text-white flex items-center">
+          <h1 className="text-lg md:text-xl font-semibold tracking-tight text-white">
             Agend
             <span className="font-light bg-gradient-to-r from-teal-400 to-cyan-500 text-transparent bg-clip-text">
               ai
@@ -42,114 +41,73 @@ export const Header = () => {
           </h1>
         </Link>
 
-        {/* Desktop Navigation */}
-        <div className="hidden md:flex items-center space-x-6">
-          {/* Navigation Links */}
-          <div className="flex items-center space-x-6">
-            {navigationItems.map((item) => (
-              <a
-                key={item.name}
-                href={item.href}
-                className="text-sm text-gray-400 hover:text-white transition-colors"
-              >
-                {item.name}
-              </a>
-            ))}
-          </div>
-
-          {/* Desktop CTA Buttons */}
-          <div className="flex items-center space-x-4">
-            <a
-              href="/login"
-              className="px-4 py-2 text-sm font-medium text-gray-300 border border-gray-700/50 rounded-lg
-                       hover:text-teal-400 hover:border-teal-400/50 hover:bg-teal-400/10
-                       transition-all duration-300"
-            >
-              Login
-            </a>
-            <a
-              href="/novo-negocio"
-              className="px-4 py-2 text-sm font-medium text-black
-                       bg-gradient-to-r from-teal-400 to-cyan-500 rounded-lg
-                       hover:opacity-90 transition-all duration-300 transform hover:scale-105
-                       shadow-lg border border-teal-300/30"
-            >
-              Começar
-            </a>
-          </div>
-        </div>
-
-        {/* Mobile Menu Button */}
-        <div className="flex items-center md:hidden">
-          <button
-            onClick={toggleMenu}
-            className="p-2 rounded-lg bg-black/20 backdrop-blur-lg border border-white/10
-                     hover:bg-black/30 transition-all duration-200 text-white relative z-50"
+        {/* Desktop CTA Buttons */}
+        <div className="hidden md:flex items-center space-x-4">
+          <Button
+            asChild
+            variant="ghost"
+            className="flex items-center space-x-2 text-gray-300 border border-gray-700 px-6 py-3 text-sm rounded-lg hover:text-teal-400 hover:border-teal-400 hover:bg-transparent transition-all duration-300"
           >
-            {isOpen ? (
-              <X className="h-6 w-6" />
-            ) : (
-              <Menu className="h-6 w-6" />
-            )}
-          </button>
+            <Link href="/login">
+              <LogIn className="h-4 w-4" />
+              <span>Login</span>
+            </Link>
+          </Button>
+          <Button
+            asChild
+            className="flex items-center space-x-2 bg-gradient-to-r from-teal-400 to-cyan-500 text-black px-6 py-3 text-sm rounded-lg hover:opacity-90 transition-all duration-300"
+          >
+            <Link href="/novo-negocio">
+              <ArrowRight className="h-4 w-4" />
+              <span>Começar</span>
+            </Link>
+          </Button>
         </div>
 
-        {/* Mobile Menu Overlay */}
-        {isOpen && (
-          <div 
-            className="fixed inset-0 bg-black/50 backdrop-blur-lg z-40"
-            onClick={handleLinkClick}
-          />
-        )}
-
-        {/* Mobile Menu Content */}
-        <div
-          className={cn(
-            "fixed inset-x-0 top-0 h-screen bg-black pt-20 z-50 md:hidden transition-transform duration-300",
-            "flex flex-col items-center px-6",
-            isOpen ? "translate-y-0" : "-translate-y-full"
-          )}
-        >
-          <div className="flex flex-col items-center space-y-6 w-full max-w-sm mx-auto">
-            {/* Mobile Navigation Links */}
-            {navigationItems.map((item) => (
-              <a
-                key={item.name}
-                href={item.href}
+        {/* Mobile Menu */}
+        <Sheet open={isOpen} onOpenChange={setIsOpen}>
+          <SheetTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="md:hidden text-white ml-auto"
+            >
+              <Menu className="h-5 w-5" />
+              <span className="sr-only">Menu</span>
+            </Button>
+          </SheetTrigger>
+          <SheetContent
+            side="right"
+            className="w-64 bg-black/90 backdrop-blur-lg border-gray-800 p-4"
+          >
+            <div className="flex flex-col gap-4 mt-6 border-t border-gray-800 pt-4">
+              <Button
+                asChild
+                variant="ghost"
+                className="w-full justify-center flex items-center space-x-2 text-gray-300 border border-gray-700 px-6 py-3 rounded-lg hover:border-gray-500 hover:bg-gray-700 transition-all duration-300"
                 onClick={handleLinkClick}
-                className="text-lg text-gray-300 hover:text-white transition-colors"
               >
-                {item.name}
-              </a>
-            ))}
-
-            {/* Mobile CTA Buttons */}
-            <div className="flex flex-col w-full space-y-4 pt-6">
-              <a
-                href="/login"
+                <Link href="/login">
+                  <LogIn className="h-4 w-4" />
+                  <span>Login</span>
+                </Link>
+              </Button>
+              <Button
+                asChild
+                className="w-full justify-center flex items-center space-x-2 bg-gradient-to-r from-teal-400 to-cyan-500 text-black px-6 py-3 rounded-lg hover:opacity-90 transition-all duration-300"
                 onClick={handleLinkClick}
-                className="w-full text-center px-6 py-4 text-base font-medium text-gray-300
-                         border border-gray-700/50 rounded-lg
-                         hover:text-teal-400 hover:border-teal-400/50 hover:bg-teal-400/10
-                         transition-all duration-300"
               >
-                Login
-              </a>
-              <a
-                href="/novo-negocio"
-                onClick={handleLinkClick}
-                className="w-full text-center px-6 py-4 text-base font-medium text-black
-                         bg-gradient-to-r from-teal-400 to-cyan-500 rounded-lg
-                         hover:opacity-90 transition-opacity shadow-lg"
-              >
-                Começar
-              </a>
+                <Link href="/novo-negocio">
+                  <ArrowRight className="h-4 w-4" />
+                  <span>Começar</span>
+                </Link>
+              </Button>
             </div>
-          </div>
-        </div>
-      </nav>
+          </SheetContent>
+        </Sheet>
+      </div>
     </header>
-  )
-}
+  );
+};
 
-export default Header
+export default Header;
